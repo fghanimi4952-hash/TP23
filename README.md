@@ -160,7 +160,9 @@ curl http://localhost:8082/voitures
 ## Résultat : 
 # serveur Eureka 
 <img width="653" height="386" alt="Capture d’écran 2026-01-11 à 13 03 26" src="https://github.com/user-attachments/assets/44dd9bc2-455e-4b3d-be4b-dfbde9bcbb50" />
+
 # l’interface Web de Consul
+
 <img width="653" height="258" alt="Capture d’écran 2026-01-11 à 13 04 56" src="https://github.com/user-attachments/assets/340581ed-e4e5-4b4f-bff2-34f51d3b767d" />
 
 
