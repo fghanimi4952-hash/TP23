@@ -1,0 +1,75 @@
+# Configuration du service Gateway
+# =================================
+
+spring:
+  # Nom de l'application Gateway
+  application:
+    name: GATEWAY-SERVICE
+
+  # Configuration Consul
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: GATEWAY-SERVICE
+        enabled: true
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+
+    # Configuration Spring Cloud Gateway
+    gateway:
+      discovery:
+        # Activer la découverte de services pour le routage dynamique
+        locator:
+          enabled: true
+          # Utiliser les noms de services en minuscules pour les routes
+          lower-case-service-id: true
+      
+      # Routes configurées manuellement
+      routes:
+        # Route vers le service Client
+        - id: client-service
+          # URI dynamique basée sur la découverte Consul
+          uri: lb://SERVICE-CLIENT
+          predicates:
+            - Path=/api/client/**
+          filters:
+            # Retirer le préfixe /api/client de la requête avant de la transmettre
+            - StripPrefix=2
+
+        # Route vers le service Voiture
+        - id: voiture-service
+          uri: lb://SERVICE-VOITURE
+          predicates:
+            - Path=/api/voiture/**
+          filters:
+            - StripPrefix=2
+
+      # Configuration globale
+      globalcors:
+        # Configuration CORS pour permettre les requêtes cross-origin
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+# Port du Gateway (point d'entrée de tous les microservices)
+server:
+  port: 8888
+
+# Configuration Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,8 @@
+# Fichiers et dossiers à ignorer lors de la construction Docker
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+*.log
+.DS_Store

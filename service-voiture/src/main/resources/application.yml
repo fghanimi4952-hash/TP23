@@ -1,0 +1,50 @@
+# Configuration du service Voiture
+# =================================
+
+spring:
+  # Nom de l'application : identifiant dans Consul
+  application:
+    name: SERVICE-VOITURE
+
+  # Configuration Consul : REMPLACE Eureka !
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: SERVICE-VOITURE
+        enabled: true
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+
+  # Configuration de la base de données MySQL
+  datasource:
+    # URL de connexion : port 3309
+    url: jdbc:mysql://localhost:3309/Micro_VoitureDB?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Configuration JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+# Port du service Voiture
+server:
+  port: 8082
+
+# Configuration Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
