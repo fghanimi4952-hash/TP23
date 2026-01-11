@@ -1,26 +1,26 @@
 # TP 23 : Migration de Eureka vers Consul
 
-## 📋 Objectifs
+##  Objectifs
 
 - Comprendre la logique d'une migration de service discovery (Eureka → Consul)
 - Configurer Consul pour enregistrer et découvrir des microservices
 - Conteneuriser et déployer l'ensemble avec Docker et Docker Compose
 
-## 🎯 Ce qui sera obtenu à la fin
+##  Ce qui sera obtenu à la fin
 
-- ✅ Consul exécuté localement et accessible via son interface Web
-- ✅ Les microservices démarrent et se déclarent dans Consul
-- ✅ La découverte se fait via Consul (au lieu d'Eureka)
-- ✅ Une base solide pour conteneuriser le tout avec Docker Compose
+-  Consul exécuté localement et accessible via son interface Web
+-  Les microservices démarrent et se déclarent dans Consul
+-  La découverte se fait via Consul (au lieu d'Eureka)
+-  Une base solide pour conteneuriser le tout avec Docker Compose
 
-## 📦 Prérequis
+##  Prérequis
 
 - Docker et Docker Compose installés
 - Java 11+ et Maven installés
 - Git installé
 - Un IDE (IntelliJ IDEA, Eclipse, VS Code)
 
-## 🚀 Démarrage rapide avec Docker Compose
+##  Démarrage rapide avec Docker Compose
 
 ### 1. Cloner et démarrer tous les services
 
@@ -48,7 +48,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## 🔧 Démarrage manuel (mode développement local)
+##  Démarrage manuel (mode développement local)
 
 ### Étape 1 : Démarrer Consul
 
@@ -97,7 +97,7 @@ cd service-gateway
 mvn spring-boot:run
 ```
 
-## ✅ Vérification
+##  Vérification
 
 ### 1. Vérifier l'enregistrement dans Consul
 
@@ -152,117 +152,18 @@ curl http://localhost:8081/clients
 curl http://localhost:8082/voitures
 ```
 
-## 📁 Structure du projet
+##  Structure du projet
 
-```
-TP23/
-├── service-client/          # Microservice Client
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   └── resources/
-│   │   │       └── application.yml
-│   └── pom.xml
-├── service-gateway/         # API Gateway
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   └── resources/
-│   │   │       └── application.yml
-│   └── pom.xml
-├── service-voiture/         # Microservice Voiture
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   └── resources/
-│   │   │       └── application.yml
-│   └── pom.xml
-├── docker-compose.yml       # Configuration Docker Compose
-└── README.md
-```
 
-## 🔄 Migration Eureka → Consul
+<img width="480" height="673" alt="Capture d’écran 2026-01-11 à 13 02 07" src="https://github.com/user-attachments/assets/e84991c2-a417-41e1-9bf2-f1ee5b0d2e97" />
 
-### Changements principaux
+## Résultat : 
+# serveur Eureka 
+<img width="653" height="386" alt="Capture d’écran 2026-01-11 à 13 03 26" src="https://github.com/user-attachments/assets/44dd9bc2-455e-4b3d-be4b-dfbde9bcbb50" />
+# l’interface Web de Consul
+<img width="653" height="258" alt="Capture d’écran 2026-01-11 à 13 04 56" src="https://github.com/user-attachments/assets/340581ed-e4e5-4b4f-bff2-34f51d3b767d" />
 
-1. **Dépendances Maven** :
-   - ❌ Supprimer : `spring-cloud-starter-netflix-eureka-client`
-   - ✅ Ajouter : `spring-cloud-starter-consul-discovery`
 
-2. **Configuration (application.yml)** :
-   - ❌ Supprimer : `eureka.client.*`
-   - ✅ Ajouter : `spring.cloud.consul.*`
+<img width="645" height="258" alt="Capture d’écran 2026-01-11 à 13 05 26" src="https://github.com/user-attachments/assets/96fc7dc3-ae2a-4cc1-ae8c-8b7cce8f68b7" />
 
-3. **Annotations** :
-   - ❌ `@EnableEurekaClient` (déprécié)
-   - ✅ `@EnableDiscoveryClient` (générique, fonctionne avec Consul)
 
-4. **Interface Web** :
-   - ❌ Eureka Dashboard
-   - ✅ Consul UI (http://localhost:8500)
-
-## 🎓 Points importants
-
-### Consul vs Eureka
-
-- **Consul** : Solution développée par HashiCorp
-  - Découverte de services
-  - Health checks avancés
-  - Stockage Key/Value
-  - Coordination distribuée
-
-- **Eureka** : Solution Netflix
-  - Focalisée sur la découverte
-  - Très intégrée à Spring Cloud
-
-### Configuration Consul
-
-```yaml
-spring:
-  cloud:
-    consul:
-      host: localhost        # Adresse Consul
-      port: 8500             # Port par défaut
-      discovery:
-        service-name: SERVICE-CLIENT  # Nom dans Consul
-        enabled: true
-        health-check-path: /actuator/health
-```
-
-### Avantages de la migration
-
-- ✅ Health checks plus robustes
-- ✅ Interface web moderne
-- ✅ Support multi-datacenter
-- ✅ Stockage Key/Value intégré
-- ✅ Compatibilité avec d'autres technologies (pas seulement Java)
-
-## 🐛 Dépannage
-
-### Les services ne s'enregistrent pas dans Consul
-
-1. Vérifier que Consul est démarré : `consul members`
-2. Vérifier les logs des services : chercher les erreurs de connexion à Consul
-3. Vérifier la configuration dans `application.yml` : host et port
-
-### Erreurs de connexion à MySQL
-
-1. Vérifier que MySQL est démarré
-2. Vérifier le port dans `application.yml` (3309 pour Client, 3308 pour Voiture)
-3. Vérifier les credentials (root/root)
-
-### Le Gateway ne route pas correctement
-
-1. Vérifier que les services sont enregistrés dans Consul
-2. Vérifier les routes dans `application.yml` du Gateway
-3. Vérifier les noms de services (doivent correspondre)
-
-## 📚 Ressources
-
-- [Documentation Consul](https://www.consul.io/docs)
-- [Spring Cloud Consul](https://spring.io/projects/spring-cloud-consul)
-- [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway)
-
-## 📝 Remarque de clôture
-
-La migration de Eureka vers Consul permet d'améliorer la résilience et la gestion des microservices. En suivant ces étapes, les projets utilisent désormais Consul pour la découverte de services, offrant une base solide pour le déploiement en production.
